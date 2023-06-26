@@ -12,6 +12,10 @@ class RepetitionEx(Exception):
     pass
 
 
+class IncorrectDateEx(Exception):
+    pass
+
+
 notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
 cycle_status = True
 
@@ -67,13 +71,32 @@ while cycle_status:
                 else:
                     print(note_list)
             elif user_command == "date":
-                note_year = input("Введите год: ")
-                note_month = input("Введите месяц: ")
-                note_day = input("Введите день: ")
+                note_year = int(input("Введите год: "))
+                note_year = str(note_year)
+                if len(note_year) != 4:
+                    raise IncorrectDateEx()
+                note_month = int(input("Введите месяц: "))
+                note_month = str(note_month)
+                if len(note_month) > 2 or len(note_month) < 1:
+                    raise IncorrectDateEx()
+                if len(note_month) == 1:
+                    note_month = "0" + note_month
+                note_day = int(input("Введите день: "))
+                note_day = str(note_day)
+                if len(note_day) > 2 or len(note_day) < 1:
+                    raise IncorrectDateEx()
+                if len(note_day) == 1:
+                    note_day = "0" + note_day
+                user_date = note_year + "-" + note_month + "-" + note_day
+                counter = 0
                 for file in note_list:
-                    with open (file) as current_file:
+                    with open(file) as current_file:
                         note_date = current_file.readlines()
-                        print(note_date)
+                        if user_date in note_date[0]:
+                            print(file)
+                            counter += 1
+                if counter == 0: print("Не найдено заметок для даты " + user_date)
+
             elif user_command == "stop":
                 cycle_status = False
 
@@ -83,3 +106,7 @@ while cycle_status:
         print("Неверная команда, попробуйте еще раз!")
     except RepetitionEx:
         print("Заметка с таким названием уже существует.")
+    except IncorrectDateEx:
+        print("Некорректное число!")
+    except ValueError:
+        print("Вы ввели строку вместо числа.")
