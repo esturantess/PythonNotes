@@ -12,28 +12,28 @@ class RepetitionEx(Exception):
     pass
 
 
-notes_commands = ["add", "edit", "del", "read", "list"]
+notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
+cycle_status = True
 
-files = listdir(".")
-mytxt = filter(lambda x: x.endswith('.txt'), files)
-note_list = list(mytxt)
-
-while True:
+while cycle_status:
+    files = listdir(".")
+    mytxt = filter(lambda x: x.endswith('.txt'), files)
+    note_list = list(mytxt)
     print(
         "Доступные команды: \nadd - Добавление заметки;\nedit - Редактирование заметки;\ndel - Удаление "
-        "заметки;\nread - Чтение заметки;\nlist - Вывод списка заметок;\n")
+        "заметки;\nread - Чтение заметки;\nlist - Вывод списка заметок;\ndate - Вывод по дате;\nstop - Закончить работу с заметками;\n")
     try:
         user_command = input("Введите команду: ").lower()
         if user_command in notes_commands:
             if user_command == "add":
-                note_name = input("Введите название заметки: ")
-                if (note_name + ".txt") in note_list:
+                note_name = input("Введите название заметки: ") + ".txt"
+                if note_name in note_list:
                     raise RepetitionEx()
                 else:
                     note_list.append(note_name)
-                    my_file = open((note_name + ".txt"), "w+")
+                    my_file = open(note_name, "w+")
                     my_file.close()
-                    with open(note_name + ".txt", "w+") as new_note:
+                    with open(note_name, "w+") as new_note:
                         note_date = date.today()
                         new_note.write(str(note_date) + "\n")
                         note_header = input("Введите заголовок заметки: ")
@@ -42,9 +42,9 @@ while True:
                         new_note.write(note_text + "\n")
                         note_id = str(datetime.now())
             elif user_command == "edit":
-                file_name = input("Введите название заметки: ")
-                if (file_name + ".txt") in note_list:
-                    with open((file_name + ".txt"), "w+") as current_note:
+                file_name = input("Введите название заметки: ") + ".txt"
+                if file_name in note_list:
+                    with open(file_name, "w+") as current_note:
                         note_date = date.today()
                         current_note.write(str(note_date) + "\n")
                         new_header = input("Введите новый заголовок заметки: ")
@@ -66,6 +66,17 @@ while True:
                     print("Заметок пока нет.")
                 else:
                     print(note_list)
+            elif user_command == "date":
+                note_year = input("Введите год: ")
+                note_month = input("Введите месяц: ")
+                note_day = input("Введите день: ")
+                for file in note_list:
+                    with open (file) as current_file:
+                        note_date = current_file.readlines()
+                        print(note_date)
+            elif user_command == "stop":
+                cycle_status = False
+
         else:
             raise NewEx()
     except NewEx:
