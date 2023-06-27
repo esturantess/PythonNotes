@@ -33,7 +33,7 @@ def add_note(note_list):
         note_text = input("Введите текст заметки: ")
         new_note.update({"date": note_date, "header": note_header, "text": note_text})
         with open(note_name, 'w') as f_n:
-            json.dump(new_note, f_n)
+            json.dump(new_note, f_n, ensure_ascii=False)
         print("Заметка сохранена.\n")
 
 
@@ -47,7 +47,7 @@ def edit_note(note_list):
             new_text = input("Введите новый текст заметки: ")
             new_note.update({"date": note_date, "header": new_header, "text": new_text})
             with open(file_name, 'w') as f_n:
-                json.dump(new_note, f_n)
+                json.dump(new_note,  f_n, ensure_ascii=False)
             print("Заметка изменена.\n")
     else:
         raise NonExistenceEx()
