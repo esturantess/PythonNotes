@@ -55,9 +55,9 @@ def edit_note(note_list):
 
 
 def del_note(note_list):
-    note_name = input("Введите название заметки: ")
+    note_name = input("Введите название заметки: ") + ".txt"
     if note_name in note_list:
-        os.remove(note_name + ".txt")
+        os.remove(note_name)
         print("Заметка удалена.\n")
     else:
         raise NonExistenceEx()
