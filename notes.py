@@ -110,44 +110,48 @@ def date_sorting():
     print("\n")
 
 
-notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
-cycle_status = True
-now = datetime.now()
+def working_with_notes():
+    notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
+    cycle_status = True
+    now = datetime.now()
 
-while cycle_status:
-    files = listdir(".")
-    mytxt = filter(lambda x: x.endswith('.txt'), files)
-    note_list = list(mytxt)
-    print(
-        "Доступные команды: \nadd - Добавление заметки;\nedit - Редактирование заметки;\ndel - Удаление "
-        "заметки;\nread - Чтение заметки;\nlist - Вывод списка заметок;\ndate - Вывод по дате; "
-        "\nstop - Закончить работу с заметками;\n")
-    try:
-        user_command = input("Введите команду: ").lower()
-        if user_command in notes_commands:
-            if user_command == "add":
-                add_note()
-            elif user_command == "edit":
-                edit_note()
-            elif user_command == "del":
-                del_note()
-            elif user_command == "read":
-                read_note()
-            elif user_command == "list":
-                get_notes_list()
-            elif user_command == "date":
-                date_sorting()
-            elif user_command == "stop":
-                cycle_status = False
-        else:
-            raise NewEx()
-    except NewEx:
-        print("Неверная команда, попробуйте еще раз!\n")
-    except RepetitionEx:
-        print("Заметка с таким названием уже существует.\n")
-    except IncorrectDateEx:
-        print("Некорректное число!\n")
-    except ValueError:
-        print("Вы ввели строку вместо числа.\n")
-    except NonExistenceEx:
-        print("Заметка не найдена.\n")
+    while cycle_status:
+        files = listdir(".")
+        mytxt = filter(lambda x: x.endswith('.txt'), files)
+        note_list = list(mytxt)
+        print(
+            "Доступные команды: \nadd - Добавление заметки;\nedit - Редактирование заметки;\ndel - Удаление "
+            "заметки;\nread - Чтение заметки;\nlist - Вывод списка заметок;\ndate - Вывод по дате; "
+            "\nstop - Закончить работу с заметками;\n")
+        try:
+            user_command = input("Введите команду: ").lower()
+            if user_command in notes_commands:
+                if user_command == "add":
+                    add_note()
+                elif user_command == "edit":
+                    edit_note()
+                elif user_command == "del":
+                    del_note()
+                elif user_command == "read":
+                    read_note()
+                elif user_command == "list":
+                    get_notes_list()
+                elif user_command == "date":
+                    date_sorting()
+                elif user_command == "stop":
+                    cycle_status = False
+            else:
+                raise NewEx()
+        except NewEx:
+            print("Неверная команда, попробуйте еще раз!\n")
+        except RepetitionEx:
+            print("Заметка с таким названием уже существует.\n")
+        except IncorrectDateEx:
+            print("Некорректное число!\n")
+        except ValueError:
+            print("Вы ввели строку вместо числа.\n")
+        except NonExistenceEx:
+            print("Заметка не найдена.\n")
+
+
+working_with_notes()
