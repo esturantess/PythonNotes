@@ -45,6 +45,7 @@ while cycle_status:
                         note_text = input("Введите текст заметки: ")
                         new_note.write(note_text + "\n")
                         note_id = str(datetime.now())
+                        print("Заметка сохранена.\n")
             elif user_command == "edit":
                 file_name = input("Введите название заметки: ") + ".txt"
                 if file_name in note_list:
@@ -55,10 +56,11 @@ while cycle_status:
                         current_note.write(new_header + "\n")
                         new_text = input("Введите новый текст заметки: ")
                         current_note.write(new_text + "\n")
+                print("\n")
             elif user_command == "del":
                 note_name = input("Введите название заметки: ")
                 os.remove(note_name + ".txt")
-                print("Заметка удалена.")
+                print("Заметка удалена.\n")
             elif user_command == "read":
                 file_name = input("Введите название заметки: ")
                 if (file_name + ".txt") in note_list:
@@ -67,9 +69,10 @@ while cycle_status:
                             print(line)
             elif user_command == "list":
                 if len(note_list) == 0:
-                    print("Заметок пока нет.")
+                    print("Заметок пока нет.\n")
                 else:
                     print(note_list)
+                    print("\n")
             elif user_command == "date":
                 note_year = int(input("Введите год: "))
                 note_year = str(note_year)
@@ -96,10 +99,11 @@ while cycle_status:
                             print(file)
                             counter += 1
                 if counter == 0: print("Не найдено заметок для даты " + user_date)
+                print("\n")
 
             elif user_command == "stop":
                 cycle_status = False
-
+                print("\n")
         else:
             raise NewEx()
     except NewEx:
