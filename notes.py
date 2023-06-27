@@ -1,3 +1,4 @@
+import json
 from datetime import date
 from datetime import datetime
 import os
@@ -21,41 +22,39 @@ class NonExistenceEx(Exception):
 
 
 def add_note(note_list):
-    note_name = input("Введите название заметки: ") + ".txt"
+    note_name = input("Введите название заметки: ") + ".json"
     if note_name in note_list:
         raise RepetitionEx()
     else:
         note_list.append(note_name)
-        my_file = open(note_name, "w+")
-        my_file.close()
-        with open(note_name, "w+") as new_note:
-            note_date = date.today()
-            new_note.write(str(note_date) + "\n")
-            note_header = input("Введите заголовок заметки: ")
-            new_note.write(note_header + "\n")
-            note_text = input("Введите текст заметки: ")
-            new_note.write(note_text + "\n")
-            note_id = str(datetime.now())
-            print("Заметка сохранена.\n")
+        new_note = {}
+        note_date = str(date.today())
+        note_header = input("Введите заголовок заметки: ")
+        note_text = input("Введите текст заметки: ")
+        new_note.update({"date": note_date, "header": note_header, "text": note_text})
+        with open(note_name, 'w') as f_n:
+            json.dump(new_note, f_n)
+        print("Заметка сохранена.\n")
 
 
 def edit_note(note_list):
-    file_name = input("Введите название заметки: ") + ".txt"
+    file_name = input("Введите название заметки: ") + ".json"
     if file_name in note_list:
         with open(file_name, "w+") as current_note:
-            note_date = date.today()
-            current_note.write(str(note_date) + "\n")
+            new_note = {}
+            note_date = str(date.today())
             new_header = input("Введите новый заголовок заметки: ")
-            current_note.write(new_header + "\n")
             new_text = input("Введите новый текст заметки: ")
-            current_note.write(new_text + "\n")
+            new_note.update({"date": note_date, "header": new_header, "text": new_text})
+            with open(file_name, 'w') as f_n:
+                json.dump(new_note, f_n)
             print("Заметка изменена.\n")
     else:
         raise NonExistenceEx()
 
 
 def del_note(note_list):
-    note_name = input("Введите название заметки: ") + ".txt"
+    note_name = input("Введите название заметки: ") + ".json"
     if note_name in note_list:
         os.remove(note_name)
         print("Заметка удалена.\n")
@@ -64,11 +63,18 @@ def del_note(note_list):
 
 
 def read_note(note_list):
-    file_name = input("Введите название заметки: ")
-    if (file_name + ".txt") in note_list:
-        with open(file_name + ".txt") as current_note:
-            for line in current_note:
-                print(line)
+    file_name = input("Введите название заметки: ") + ".json"
+    if file_name in note_list:
+        with open(file_name) as f_n:
+            current_note = str(f_n.readlines())
+            current_note = current_note.replace(current_note[0], "").replace("]", "").replace(current_note[-1], "")
+            current_note = current_note.replace(current_note[0], "").replace("]", "").replace(current_note[-1], "")
+            current_note = dict(json.loads(current_note))
+            note_date = current_note.get("date")
+            note_header = current_note.get("header")
+            note_text = current_note.get("text")
+            print("Вы просматриваете заметку: " + (file_name.replace(".json", "")) + "\n\n" + "Дата последнего изменения: " + note_date + "\n\n" + note_header + "\n\n" + note_text)
+        print("\n")
     else:
         raise NonExistenceEx()
 
@@ -101,14 +107,18 @@ def date_sorting(note_list):
         note_day = "0" + note_day
     user_date = note_year + "-" + note_month + "-" + note_day
     counter = 0
+    print("Заметки, сделанные " + user_date + ":")
     for file in note_list:
         with open(file) as current_file:
-            note_date = current_file.readlines()
-            if user_date in note_date[0]:
-                print(file)
+            note_date = str(current_file.readlines())
+            note_date = note_date.replace(note_date[0], "").replace("]", "").replace(note_date[-1], "")
+            note_date = note_date.replace(note_date[0], "").replace("]", "").replace(note_date[-1], "")
+            note_date = dict(json.loads(note_date)).get("date")
+            if user_date in note_date:
+                print(file.replace(".json", ""))
                 counter += 1
     if counter == 0:
-        print("Не найдено заметок для даты " + user_date)
+        print("Не найдено заметок, сделанных в этот день.")
     print("\n")
 
 
@@ -118,7 +128,7 @@ def working_with_notes():
 
     while cycle_status:
         files = listdir(".")
-        mytxt = filter(lambda x: x.endswith('.txt'), files)
+        mytxt = filter(lambda x: x.endswith('.json'), files)
         note_list = list(mytxt)
         print(
             "Доступные команды: \nadd - Добавление заметки;\nedit - Редактирование заметки;\ndel - Удаление "
