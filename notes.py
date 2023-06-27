@@ -18,6 +18,7 @@ class IncorrectDateEx(Exception):
 
 notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
 cycle_status = True
+now = datetime.now()
 
 while cycle_status:
     files = listdir(".")
@@ -76,7 +77,7 @@ while cycle_status:
             elif user_command == "date":
                 note_year = int(input("Введите год: "))
                 note_year = str(note_year)
-                if len(note_year) != 4:
+                if len(note_year) != 4 or int(note_year) > now.year:
                     raise IncorrectDateEx()
                 note_month = int(input("Введите месяц: "))
                 note_month = str(note_month)
