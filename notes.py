@@ -20,7 +20,7 @@ class NonExistenceEx(Exception):
     pass
 
 
-def add_note():
+def add_note(note_list):
     note_name = input("Введите название заметки: ") + ".txt"
     if note_name in note_list:
         raise RepetitionEx()
@@ -39,7 +39,7 @@ def add_note():
             print("Заметка сохранена.\n")
 
 
-def edit_note():
+def edit_note(note_list):
     file_name = input("Введите название заметки: ") + ".txt"
     if file_name in note_list:
         with open(file_name, "w+") as current_note:
@@ -54,7 +54,7 @@ def edit_note():
         raise NonExistenceEx()
 
 
-def del_note():
+def del_note(note_list):
     note_name = input("Введите название заметки: ")
     if note_name in note_list:
         os.remove(note_name + ".txt")
@@ -63,7 +63,7 @@ def del_note():
         raise NonExistenceEx()
 
 
-def read_note():
+def read_note(note_list):
     file_name = input("Введите название заметки: ")
     if (file_name + ".txt") in note_list:
         with open(file_name + ".txt") as current_note:
@@ -73,7 +73,7 @@ def read_note():
         raise NonExistenceEx()
 
 
-def get_notes_list():
+def get_notes_list(note_list):
     if len(note_list) == 0:
         print("Заметок пока нет.\n")
     else:
@@ -81,7 +81,8 @@ def get_notes_list():
         print("\n")
 
 
-def date_sorting():
+def date_sorting(note_list):
+    now = datetime.now()
     note_year = int(input("Введите год: "))
     note_year = str(note_year)
     if len(note_year) != 4 or int(note_year) > now.year:
@@ -106,14 +107,14 @@ def date_sorting():
             if user_date in note_date[0]:
                 print(file)
                 counter += 1
-    if counter == 0: print("Не найдено заметок для даты " + user_date)
+    if counter == 0:
+        print("Не найдено заметок для даты " + user_date)
     print("\n")
 
 
 def working_with_notes():
     notes_commands = ["add", "edit", "del", "read", "list", "date", "stop"]
     cycle_status = True
-    now = datetime.now()
 
     while cycle_status:
         files = listdir(".")
@@ -127,17 +128,17 @@ def working_with_notes():
             user_command = input("Введите команду: ").lower()
             if user_command in notes_commands:
                 if user_command == "add":
-                    add_note()
+                    add_note(note_list)
                 elif user_command == "edit":
-                    edit_note()
+                    edit_note(note_list)
                 elif user_command == "del":
-                    del_note()
+                    del_note(note_list)
                 elif user_command == "read":
-                    read_note()
+                    read_note(note_list)
                 elif user_command == "list":
-                    get_notes_list()
+                    get_notes_list(note_list)
                 elif user_command == "date":
-                    date_sorting()
+                    date_sorting(note_list)
                 elif user_command == "stop":
                     cycle_status = False
             else:
